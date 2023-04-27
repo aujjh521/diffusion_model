@@ -531,12 +531,14 @@ class UNet_Tranformer(nn.Module):
     self.act = nn.SiLU() # lambda x: x * torch.sigmoid(x)
     self.marginal_prob_std = marginal_prob_std
     self.cond_embed = nn.Embedding(nClass, text_dim)
+    
+    self.dense_embed = nn.Linear(text_dim, text_dim)
   
   def forward(self, x, t, y=None): 
     # Obtain the Gaussian random feature embedding for t   
     embed = self.act(self.time_embed(t))    
     # y_embed = self.cond_embed(y).unsqueeze(1)
-    y_embed = y.unsqueeze(1) #把apc組合直接當embedding
+    y_embed = self.dense_embed(y).unsqueeze(1) #把apc組合直接當embedding
     # Encoding path
     h1 = self.conv1(x) + self.dense1(embed) 
     ## Incorporate information from t
@@ -589,8 +591,8 @@ def loss_fn_cond(model, x, y, marginal_prob_std, eps=1e-5):
 
 class CPEDataset(Dataset):
   def __init__(self, x, y):
-    self.x = x
-    self.y = y
+    self.x = x #apc comb
+    self.y = y #k term
 
   def __len__(self):
     return len(self.x)
@@ -648,7 +650,7 @@ if __name__ == '__main__':
   for epoch in tqdm_epoch:
     avg_loss = 0.
     num_items = 0
-    for x, y in tqdm(data_loader): #x: image / y: label
+    for x, y in tqdm(data_loader): #x: image / y: label (跟dataset裡面定義的有點不同)
       x = x.to(device)    
       loss = loss_fn_cond(score_model, x, y, marginal_prob_std_fn)
       optimizer.zero_grad()
@@ -669,13 +671,14 @@ if __name__ == '__main__':
   ## Load the pre-trained checkpoint from disk.
   score_model = torch.nn.DataParallel(UNet_Tranformer(marginal_prob_std=marginal_prob_std_fn, text_dim=14))
   score_model = score_model.to(device) 
+  score_model.eval()
   ckpt = torch.load('ckpt_transformer_cpe.pth', map_location=device)
   score_model.load_state_dict(ckpt)
   # digit = 8 #@param {'type':'integer'}
-  comb_test = [1,0,1,0,0,1,0,0,0,0,0,1,1,1]
+  comb_test = [0,0,0,0,0,0,0,0,0,0,-1,1,0,0]  #[0,0,0,0,0,0,0,0,0,0,-1,1,0,0] #[0,0,0,-1,1,1,0,-1,0,0,0,0,0,0] #-21
   comb_test = torch.from_numpy(np.array(comb_test).astype(np.float32)).view(1,-1)
 
-  sample_batch_size = 64 #@param {'type':'integer'}
+  sample_batch_size = 1 #64 #@param {'type':'integer'}
   num_steps = 250 #@param {'type':'integer'}
   sampler = Euler_Maruyama_sampler #@param ['Euler_Maruyama_sampler', 'pc_sampler', 'ode_sampler'] {'type': 'raw'}
   # score_model.eval()
@@ -690,9 +693,13 @@ if __name__ == '__main__':
 
   ## Sample visualization.
   # samples = samples.clamp(0.0, 1.0)
+  #plt.imshow(samples[0][0].cpu())
+
   sample_grid = make_grid(samples, nrow=int(np.sqrt(sample_batch_size)))
+
+
 
   plt.figure(figsize=(6,6))
   plt.axis('off')
-  plt.imshow(sample_grid.permute(1, 2, 0).cpu(), vmin=0., vmax=1.)
+  plt.imshow(sample_grid.permute(1, 2, 0).cpu())
   plt.show()
