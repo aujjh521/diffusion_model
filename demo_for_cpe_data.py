@@ -532,7 +532,7 @@ class UNet_Tranformer(nn.Module):
     self.marginal_prob_std = marginal_prob_std
     self.cond_embed = nn.Embedding(nClass, text_dim)
     
-    self.dense_embed = nn.Linear(text_dim, text_dim)
+    self.dense_embed = nn.Linear(nClass, text_dim)
   
   def forward(self, x, t, y=None): 
     # Obtain the Gaussian random feature embedding for t   
@@ -601,9 +601,19 @@ class CPEDataset(Dataset):
     comb = self.x[idx]
 
     #把y轉成image格式
-    kterm = einops.repeat(self.y[idx], 'c -> c (28) (28)') #reshape to specific shape (MNIST: 28,28)
+    # kterm = einops.repeat(self.y[idx], 'c -> c (28) (28)') #reshape to specific shape (MNIST: 28,28)
+    kterm = self.y[idx][0].mean().repeat(28,28) #先只看一個維度
+
+    m = kterm.mean()
+    s = 14
+    kterm[0:s, 0:s] = m
+    kterm[s:2*s, 0:s] = 2*m
+    kterm[0:s, s:2*s] = 3*m
+    kterm[s:2*s, s:2*s] = 4*m
+
+
     #先只看一個維度
-    kterm = kterm[0].unsqueeze(0) #unsqueeze 是要讓最後產生的tensor要有三個維度
+    kterm = kterm.unsqueeze(0) #unsqueeze 是要讓最後產生的tensor要有三個維度
 
     return kterm, comb
 
@@ -629,17 +639,16 @@ if __name__ == '__main__':
   marginal_prob_std_fn = functools.partial(marginal_prob_std, sigma=sigma)
   diffusion_coeff_fn = functools.partial(diffusion_coeff, sigma=sigma)
 
-  score_model = torch.nn.DataParallel(UNet_Tranformer(marginal_prob_std=marginal_prob_std_fn, text_dim=14))
+  score_model = torch.nn.DataParallel(UNet_Tranformer(marginal_prob_std=marginal_prob_std_fn, nClass=14, text_dim=256))
   score_model = score_model.to(device) 
 
   #training
-  '''
   num_steps = 500
-  n_epochs =   200#@param {'type':'integer'}
+  n_epochs =   2#@param {'type':'integer'}
   ## size of a mini-batch
   batch_size =  512 #@param {'type':'integer'}
   ## learning rate
-  lr=10e-4 #@param {'type':'number'}
+  lr=10e-3 #@param {'type':'number'}
 
   dataset = CPEDataset(X_train_tensor, y_train_tensor)
   data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
@@ -665,11 +674,11 @@ if __name__ == '__main__':
     tqdm_epoch.set_description('Average Loss: {:5f}'.format(avg_loss / num_items))
     # Update the checkpoint after each epoch of training.
     torch.save(score_model.state_dict(), 'ckpt_transformer_cpe.pth')
-  '''
+  
 
   #sampling
   ## Load the pre-trained checkpoint from disk.
-  score_model = torch.nn.DataParallel(UNet_Tranformer(marginal_prob_std=marginal_prob_std_fn, text_dim=14))
+  score_model = torch.nn.DataParallel(UNet_Tranformer(marginal_prob_std=marginal_prob_std_fn, nClass=14, text_dim=256))
   score_model = score_model.to(device) 
   score_model.eval()
   ckpt = torch.load('ckpt_transformer_cpe.pth', map_location=device)
@@ -692,14 +701,14 @@ if __name__ == '__main__':
           y=comb_test)
 
   ## Sample visualization.
-  # samples = samples.clamp(0.0, 1.0)
-  #plt.imshow(samples[0][0].cpu())
-
-  sample_grid = make_grid(samples, nrow=int(np.sqrt(sample_batch_size)))
-
-
-
-  plt.figure(figsize=(6,6))
-  plt.axis('off')
-  plt.imshow(sample_grid.permute(1, 2, 0).cpu())
+  plt.imshow(samples[0][0].cpu())
   plt.show()
+
+  # sample_grid = make_grid(samples, nrow=int(np.sqrt(sample_batch_size)))
+
+
+
+  # plt.figure(figsize=(6,6))
+  # plt.axis('off')
+  # plt.imshow(sample_grid.permute(1, 2, 0).cpu())
+  # plt.show()

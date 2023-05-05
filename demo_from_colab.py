@@ -836,7 +836,7 @@ if __name__ == '__main__':
     score_model.eval()
     for digit in range(10):
       ## Generate samples using the specified sampler.
-      sample_batch_size = 64 #@param {'type':'integer'}
+      sample_batch_size = 1 #64 #@param {'type':'integer'}
       num_steps = 500 #@param {'type':'integer'}
       sampler = Euler_Maruyama_sampler #@param ['Euler_Maruyama_sampler', 'pc_sampler', 'ode_sampler'] {'type': 'raw'}
       # score_model.eval()
@@ -849,7 +849,10 @@ if __name__ == '__main__':
               device=device,
               y=digit*torch.ones(sample_batch_size, dtype=torch.long))
 
-          ## Sample visualization.
+      #check the mean / siga of generated image
+      print(f'the mean of generated image is {samples.mean()}, sigma is {samples.std()}')
+      
+      ## Sample visualization.
       samples = samples.clamp(0.0, 1.0)
       sample_grid = make_grid(samples, nrow=int(np.sqrt(sample_batch_size)))
       sample_np = sample_grid.permute(1, 2, 0).cpu().numpy()
