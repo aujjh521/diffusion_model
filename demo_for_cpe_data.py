@@ -64,8 +64,20 @@ def preprocessing(train_data_path, test_data_path):
   #make y to numpy array
   y = y.values
 
+  #transfer y to image (只取Tx, 並且轉成28*28的image)
+  y = np.tile(y[:,0,np.newaxis,np.newaxis], (1,28,28)) #[num of sample, 28, 28]
+
+  #讓y的值變成四公格
+  m = y.mean(axis=(1,2))
+  s = 14
+  y[:, 0:s, 0:s] = m[:,np.newaxis,np.newaxis]
+  y[:, s:2*s, 0:s] = 2*m[:,np.newaxis,np.newaxis]
+  y[:, 0:s, s:2*s] = 3*m[:,np.newaxis,np.newaxis]
+  y[:, s:2*s, s:2*s] = 4*m[:,np.newaxis,np.newaxis]
+
   X_bias = np.empty((0,X.shape[1]))
-  y_bias = np.empty((0,y.shape[1]))
+  y_bias = np.empty((0,y.shape[1],y.shape[2]))
+
   print(f'X:{type(X)},y:{type(y)}')
   for pair in permut:
     temp_X = X[pair[0]] - X[pair[1]]
@@ -74,7 +86,7 @@ def preprocessing(train_data_path, test_data_path):
     y_bias = np.append(y_bias,temp_y)
 
   X_bias = X_bias.reshape(-1,X.shape[1])
-  y_bias = y_bias.reshape(-1,y.shape[1])
+  y_bias = y_bias.reshape(-1,y.shape[1],y.shape[2])
   print(f'資料膨脹完畢')
 
   #train / test split (注意這邊是把X_bias,y_bias拿去拆train test)
@@ -83,6 +95,12 @@ def preprocessing(train_data_path, test_data_path):
   X_train , X_test , y_train , y_test = train_test_split(X_bias,y_bias , test_size=0.3 , random_state=40)
   print(f'train/test split done, X_train , X_test , y_train , y_test size:\n{X_train.shape , X_test.shape , y_train.shape , y_test.shape}')
   print(y_train[0:5])
+
+  #normalization
+  y_mean_train = y_train.mean()
+  y_std_train = y_train.std()
+  y_train = (y_train - y_mean_train) / y_std_train
+
 
   #Standardization (y train 做完scaler之後套給 y test)
   # print(f'{"="*20} start Standardization {"="*20}')
@@ -94,7 +112,7 @@ def preprocessing(train_data_path, test_data_path):
   # plt.hist(y_train[:,0])
   # plt.show()
 
-  return X_train , X_test , y_train , y_test, le_list, ohe
+  return X_train , X_test , y_train , y_test, le_list, ohe, y_mean_train, y_std_train
 
 class GaussianFourierProjection(nn.Module):
   """Gaussian random features for encoding time steps."""  
@@ -602,15 +620,7 @@ class CPEDataset(Dataset):
 
     #把y轉成image格式
     # kterm = einops.repeat(self.y[idx], 'c -> c (28) (28)') #reshape to specific shape (MNIST: 28,28)
-    kterm = self.y[idx][0].mean().repeat(28,28) #先只看一個維度
-
-    m = kterm.mean()
-    s = 14
-    kterm[0:s, 0:s] = m
-    kterm[s:2*s, 0:s] = 2*m
-    kterm[0:s, s:2*s] = 3*m
-    kterm[s:2*s, s:2*s] = 4*m
-
+    kterm = self.y[idx]
 
     #先只看一個維度
     kterm = kterm.unsqueeze(0) #unsqueeze 是要讓最後產生的tensor要有三個維度
@@ -626,7 +636,7 @@ if __name__ == '__main__':
   test_data_path = 'OVL_data_for_ML_test_medium_exam_new.xlsx'
 
   #preprocessing data
-  X_train , X_test , y_train , y_test, le_list, ohe = preprocessing(train_data_path, test_data_path)
+  X_train , X_test , y_train , y_test, le_list, ohe, y_mean_train, y_std_train = preprocessing(train_data_path, test_data_path)
 
   #create dataset
   X_train_tensor = torch.from_numpy(X_train.astype(np.float32))
