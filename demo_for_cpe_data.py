@@ -1,3 +1,6 @@
+#!/usr/envs/MLenv/python
+# -*- coding: utf-8 -*-
+
 #Import package
 #torch
 import torch
@@ -25,14 +28,21 @@ import tqdm
 from tqdm.notebook import trange, tqdm
 import matplotlib.pyplot as plt
 
+from Mylog import getMyLogger
+
+logFileName_normal, logFileName_debug, logDir = 'Mylog_normal.log' , 'Mylog_debug.log', 'log'
+logger = getMyLogger(logFileName_normal, logDir, 'INFO')
+logger_debug = getMyLogger(logFileName_debug, logDir, 'DEBUG')
+
+
 def preprocessing(train_data_path, test_data_path):
   #load data
   train_dataset = pd.read_excel(train_data_path)
   test_dataset = pd.read_excel(test_data_path)
-  print(f'train / test dataset are loaded, shape is {train_dataset.shape} / {test_dataset.shape}')
+  logger.info(f'train / test dataset are loaded, shape is {train_dataset.shape} / {test_dataset.shape}')
 
   #column define
-  print(f'{"="*20} start column define {"="*20}')
+  logger.info(f'{"="*20} start column define {"="*20}')
   feature_col = ['PART', 'CUREQP', 'PRE1EQP', 'PRE2EQP', 'RETICLE','PRERETICLE']
   val_col = ['Tx_Rn', 'Ty_Rn']
   X = train_dataset[feature_col]
@@ -40,24 +50,24 @@ def preprocessing(train_data_path, test_data_path):
 
   #preprocessing
   #label encode & one hot encode
-  print(f'{"="*20} start label encode & one hot encode {"="*20}')
+  logger.info(f'{"="*20} start label encode & one hot encode {"="*20}')
   
 
   le_list = []
   for col in feature_col:
     le = LabelEncoder()
     X[col] = le.fit_transform(X[col])
-    print(f'label encodinf done, {le.classes_}')
+    logger.info(f'label encodinf done, {le.classes_}')
     le_list.append(le)
-  print(f'after label encoding, X is:\n{X.head()}')
+  logger.info(f'after label encoding, X is:\n{X.head()}')
 
   ohe = OneHotEncoder()
   X = ohe.fit_transform(X).toarray()
-  print(f'one hot encoder: {ohe.categories_}')
-  print(f'after one hot encoding, X is:\n{X}')
+  logger.info(f'one hot encoder: {ohe.categories_}')
+  logger.info(f'after one hot encoding, X is:\n{X}')
 
   #get all permutations
-  print(f'{"="*20} start get all permutations {"="*20}')
+  logger.info(f'{"="*20} start get all permutations {"="*20}')
   index = list(range(len(X)))
   permut = itertools.permutations(index,r=2)
 
@@ -78,7 +88,7 @@ def preprocessing(train_data_path, test_data_path):
   X_bias = np.empty((0,X.shape[1]))
   y_bias = np.empty((0,y.shape[1],y.shape[2]))
 
-  print(f'X:{type(X)},y:{type(y)}')
+  logger.info(f'X:{type(X)},y:{type(y)}')
   for pair in permut:
     temp_X = X[pair[0]] - X[pair[1]]
     temp_y = y[pair[0]] - y[pair[1]]
@@ -87,14 +97,14 @@ def preprocessing(train_data_path, test_data_path):
 
   X_bias = X_bias.reshape(-1,X.shape[1])
   y_bias = y_bias.reshape(-1,y.shape[1],y.shape[2])
-  print(f'資料膨脹完畢')
+  logger.info(f'資料膨脹完畢')
 
   #train / test split (注意這邊是把X_bias,y_bias拿去拆train test)
-  print(f'{"="*20} start train / test split {"="*20}')
+  logger.info(f'{"="*20} start train / test split {"="*20}')
   
   X_train , X_test , y_train , y_test = train_test_split(X_bias,y_bias , test_size=0.3 , random_state=40)
-  print(f'train/test split done, X_train , X_test , y_train , y_test size:\n{X_train.shape , X_test.shape , y_train.shape , y_test.shape}')
-  print(y_train[0:5])
+  logger.info(f'train/test split done, X_train , X_test , y_train , y_test size:\n{X_train.shape , X_test.shape , y_train.shape , y_test.shape}')
+  logger.info(y_train[0:5])
 
   #normalization
   y_mean_train = y_train.mean()
@@ -103,10 +113,10 @@ def preprocessing(train_data_path, test_data_path):
 
 
   #Standardization (y train 做完scaler之後套給 y test)
-  # print(f'{"="*20} start Standardization {"="*20}')
+  # logger.info(f'{"="*20} start Standardization {"="*20}')
   # scaler = StandardScaler()
   # y_train = scaler.fit_transform(y_train)
-  # print(f'after standardization, y_train is:\n{y_train[15:25]}')
+  # logger.info(f'after standardization, y_train is:\n{y_train[15:25]}')
   # y_test = scaler.transform(y_test)
 
   # plt.hist(y_train[:,0])
@@ -385,14 +395,26 @@ def Euler_Maruyama_sampler(score_model,
   Returns:
     Samples.    
   """
+  logger.info(f'in Euler_Maruyama_sampler, batch_size, device is\n{batch_size}, {device}')
   t = torch.ones(batch_size, device=device)
   init_x = torch.randn(batch_size, *x_shape, device=device) \
     * marginal_prob_std(t)[:, None, None, None]
+  
+  logger.info(f'init_x shape in sampler is {init_x.shape}')
+  init_x_mean_1st_region = init_x[0][0][0:14,0:14].mean().cpu()
+  init_x_mean_2nd_region = init_x[0][0][14:28,0:14].mean().cpu()
+  init_x_mean_3rd_region = init_x[0][0][0:14,14:28].mean().cpu()
+  init_x_mean_4th_region = init_x[0][0][14:28,14:28].mean().cpu()
+  init_x_mean_region = [[init_x_mean_1st_region, init_x_mean_3rd_region], [init_x_mean_2nd_region,init_x_mean_4th_region]]
+  init_x_mean_region = np.array(init_x_mean_region)
+  logger.info(f'the mean value of init_x image is\n{init_x_mean_region}')
+
+  
   time_steps = torch.linspace(1., eps, num_steps, device=device)
   step_size = time_steps[0] - time_steps[1]
   x = init_x
   with torch.no_grad():
-    for time_step in tqdm(time_steps):      
+    for time_step in tqdm(time_steps):   
       batch_time_step = torch.ones(batch_size, device=device) * time_step
       g = diffusion_coeff(batch_time_step)
       mean_x = x + (g**2)[:, None, None, None] * score_model(x, batch_time_step, y=y) * step_size
@@ -441,11 +463,11 @@ class CrossAttention(nn.Module):
         Q = self.query(tokens)
         K = self.key(context)
         V = self.value(context)
-    #print(Q.shape, K.shape, V.shape)
+    #logger.info(Q.shape, K.shape, V.shape)
     ####### YOUR CODE HERE (2 lines)
     scoremats = torch.einsum("BTH,BSH->BTS", Q, K)         # inner product of Q and K, a tensor 
     attnmats = F.softmax(scoremats/np.sqrt(self.embed_dim), dim=-1)          # softmax of scoremats
-    #print(scoremats.shape, attnmats.shape, )
+    #logger.info(scoremats.shape, attnmats.shape, )
     ctx_vecs = torch.einsum("BTS,BSH->BTH", attnmats, V)  # weighted average value vectors by attnmats
     return ctx_vecs
 
@@ -626,10 +648,41 @@ class CPEDataset(Dataset):
     kterm = kterm.unsqueeze(0) #unsqueeze 是要讓最後產生的tensor要有三個維度
 
     return kterm, comb
+  
+def getSampleImage(score_model, 
+                    marginal_prob_std_fn,
+                    diffusion_coeff_fn, 
+                    sample_batch_size, 
+                    num_steps,
+                    device,
+                    y):
+  
+  sampler = Euler_Maruyama_sampler
+  samples = sampler(score_model, 
+            marginal_prob_std_fn,
+            diffusion_coeff_fn, 
+            sample_batch_size, 
+            num_steps=num_steps,
+            device=device,
+            y=comb_test)
+    
+  #rescale to origin scale
+  out = samples[0][0]*y_std_train + y_mean_train
+
+  out_mean_1st_region = out[0:14,0:14].mean().cpu()
+  out_mean_2nd_region = out[14:28,0:14].mean().cpu()
+  out_mean_3rd_region = out[0:14,14:28].mean().cpu()
+  out_mean_4th_region = out[14:28,14:28].mean().cpu()
+  out_mean_region = [[out_mean_1st_region, out_mean_3rd_region], [out_mean_2nd_region,out_mean_4th_region]]
+  out_mean_region = np.array(out_mean_region)
+  logger.info(f'the mean value of out image is\n{out_mean_region}')
+
+  return out_mean_region
 
 
 
 if __name__ == '__main__':
+  logger.info(f'start!!')
   #data path
   device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
   train_data_path = 'OVL_data_for_ML_test_medium_new.xlsx'
@@ -637,6 +690,7 @@ if __name__ == '__main__':
 
   #preprocessing data
   X_train , X_test , y_train , y_test, le_list, ohe, y_mean_train, y_std_train = preprocessing(train_data_path, test_data_path)
+  logger.info(f'y_mean_train / y_std_train is {y_mean_train} / {y_std_train}')
 
   #create dataset
   X_train_tensor = torch.from_numpy(X_train.astype(np.float32))
@@ -652,38 +706,38 @@ if __name__ == '__main__':
   score_model = torch.nn.DataParallel(UNet_Tranformer(marginal_prob_std=marginal_prob_std_fn, nClass=14, text_dim=256))
   score_model = score_model.to(device) 
 
-  #training
-  num_steps = 500
-  n_epochs =   2#@param {'type':'integer'}
-  ## size of a mini-batch
-  batch_size =  512 #@param {'type':'integer'}
-  ## learning rate
-  lr=10e-3 #@param {'type':'number'}
+  # # training
+  # num_steps = 500
+  # n_epochs =   1500#@param {'type':'integer'}
+  # ## size of a mini-batch
+  # batch_size =  256 #@param {'type':'integer'}
+  # ## learning rate
+  # lr=10e-3 #@param {'type':'number'}
 
-  dataset = CPEDataset(X_train_tensor, y_train_tensor)
-  data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+  # dataset = CPEDataset(X_train_tensor, y_train_tensor)
+  # data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
 
-  optimizer = Adam(score_model.parameters(), lr=lr)
-  scheduler = LambdaLR(optimizer, lr_lambda=lambda epoch: max(0.2, 0.98 ** epoch))
-  tqdm_epoch = trange(n_epochs)
-  for epoch in tqdm_epoch:
-    avg_loss = 0.
-    num_items = 0
-    for x, y in tqdm(data_loader): #x: image / y: label (跟dataset裡面定義的有點不同)
-      x = x.to(device)    
-      loss = loss_fn_cond(score_model, x, y, marginal_prob_std_fn)
-      optimizer.zero_grad()
-      loss.backward()    
-      optimizer.step()
-      avg_loss += loss.item() * x.shape[0]
-      num_items += x.shape[0]
-    scheduler.step()
-    lr_current = scheduler.get_last_lr()[0]
-    print('{} Average Loss: {:5f} lr {:.1e}'.format(epoch, avg_loss / num_items, lr_current))
-    # Print the averaged training loss so far.
-    tqdm_epoch.set_description('Average Loss: {:5f}'.format(avg_loss / num_items))
-    # Update the checkpoint after each epoch of training.
-    torch.save(score_model.state_dict(), 'ckpt_transformer_cpe.pth')
+  # optimizer = Adam(score_model.parameters(), lr=lr)
+  # scheduler = LambdaLR(optimizer, lr_lambda=lambda epoch: max(0.2, 0.98 ** epoch))
+  # tqdm_epoch = trange(n_epochs)
+  # for epoch in tqdm_epoch:
+  #   avg_loss = 0.
+  #   num_items = 0
+  #   for x, y in tqdm(data_loader): #x: image / y: label (跟dataset裡面定義的有點不同)
+  #     x = x.to(device)    
+  #     loss = loss_fn_cond(score_model, x, y, marginal_prob_std_fn)
+  #     optimizer.zero_grad()
+  #     loss.backward()    
+  #     optimizer.step()
+  #     avg_loss += loss.item() * x.shape[0]
+  #     num_items += x.shape[0]
+  #   scheduler.step()
+  #   lr_current = scheduler.get_last_lr()[0]
+  #   logger.info('{} Average Loss: {:5f} lr {:.1e}'.format(epoch, avg_loss / num_items, lr_current))
+  #   # Print the averaged training loss so far.
+  #   tqdm_epoch.set_description('Average Loss: {:5f}'.format(avg_loss / num_items))
+  #   # Update the checkpoint after each epoch of training.
+  #   torch.save(score_model.state_dict(), 'ckpt_transformer_cpe.pth')
   
 
   #sampling
@@ -694,25 +748,52 @@ if __name__ == '__main__':
   ckpt = torch.load('ckpt_transformer_cpe.pth', map_location=device)
   score_model.load_state_dict(ckpt)
   # digit = 8 #@param {'type':'integer'}
-  comb_test = [0,0,0,0,0,0,0,0,0,0,-1,1,0,0]  #[0,0,0,0,0,0,0,0,0,0,-1,1,0,0] #[0,0,0,-1,1,1,0,-1,0,0,0,0,0,0] #-21
+  comb_test = [0,0,0,-1,1,1,0,-1,0,0,0,0,0,0]  #[0,0,0,0,0,0,0,0,0,0,-1,1,0,0] #[0,0,0,-1,1,1,0,-1,0,0,0,0,0,0] #-21
   comb_test = torch.from_numpy(np.array(comb_test).astype(np.float32)).view(1,-1)
 
   sample_batch_size = 1 #64 #@param {'type':'integer'}
   num_steps = 250 #@param {'type':'integer'}
   sampler = Euler_Maruyama_sampler #@param ['Euler_Maruyama_sampler', 'pc_sampler', 'ode_sampler'] {'type': 'raw'}
-  # score_model.eval()
+  score_model.eval()
   ## Generate samples using the specified sampler.
-  samples = sampler(score_model, 
-          marginal_prob_std_fn,
-          diffusion_coeff_fn, 
-          sample_batch_size, 
-          num_steps=num_steps,
-          device=device,
-          y=comb_test)
+  # samples = sampler(score_model, 
+  #         marginal_prob_std_fn,
+  #         diffusion_coeff_fn, 
+  #         sample_batch_size, 
+  #         num_steps=num_steps,
+  #         device=device,
+  #         y=comb_test)
+  
+  # #rescale to origin scale
+  # out = samples[0][0]*y_std_train + y_mean_train
+
+  # out_mean_1st_region = out[0:14,0:14].mean().cpu()
+  # out_mean_2nd_region = out[14:28,0:14].mean().cpu()
+  # out_mean_3rd_region = out[0:14,14:28].mean().cpu()
+  # out_mean_4th_region = out[14:28,14:28].mean().cpu()
+  # out_mean_region = [[out_mean_1st_region, out_mean_3rd_region], [out_mean_2nd_region,out_mean_4th_region]]
+  # out_mean_region = np.array(out_mean_region)
+  # logger.info(f'the mean value of out image is\n{out_mean_region}')
+
+  ######################
+  #多次產生image確認平均值
+  ######################
+  generate_times = 50
+  out_mean_region = np.zeros((2,2))
+  for i in range(generate_times):
+    out_mean_region_temp = getSampleImage(score_model, 
+                                      marginal_prob_std_fn,
+                                      diffusion_coeff_fn, 
+                                      sample_batch_size, 
+                                      num_steps=num_steps,
+                                      device=device,
+                                      y=comb_test)
+    out_mean_region = out_mean_region + out_mean_region_temp
+  logger.info(f'mean out_mean_region of {generate_times} times generation is\n{out_mean_region/generate_times}')
 
   ## Sample visualization.
-  plt.imshow(samples[0][0].cpu())
-  plt.show()
+  # plt.imshow(out.cpu())
+  # plt.show()
 
   # sample_grid = make_grid(samples, nrow=int(np.sqrt(sample_batch_size)))
 

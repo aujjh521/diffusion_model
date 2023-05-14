@@ -1,0 +1,550 @@
+2023-05-14 17:40:03,434 - [line:685] - INFO: start!!
+2023-05-14 17:40:04,050 - [line:42] - INFO: train / test dataset are loaded, shape is (32, 10) / (8, 8)
+2023-05-14 17:40:04,050 - [line:45] - INFO: ==================== start column define ====================
+2023-05-14 17:40:04,052 - [line:53] - INFO: ==================== start label encode & one hot encode ====================
+2023-05-14 17:40:04,054 - [line:60] - INFO: label encodinf done, ['TMND98A' 'TMND98B']
+2023-05-14 17:40:04,055 - [line:60] - INFO: label encodinf done, ['JPAP01' 'JPAP02' 'JPAP03']
+2023-05-14 17:40:04,056 - [line:60] - INFO: label encodinf done, ['JPAP01' 'JPAP02' 'JPAP03']
+2023-05-14 17:40:04,057 - [line:60] - INFO: label encodinf done, ['GPE301' 'GPE306' 'KPE303' 'KPE304']
+2023-05-14 17:40:04,058 - [line:60] - INFO: label encodinf done, ['ND9812QA-2']
+2023-05-14 17:40:04,059 - [line:60] - INFO: label encodinf done, ['ND9812PA-2']
+2023-05-14 17:40:04,066 - [line:62] - INFO: after label encoding, X is:
+   PART  CUREQP  PRE1EQP  PRE2EQP  RETICLE  PRERETICLE
+0     0       0        0        3        0           0
+1     0       0        0        2        0           0
+2     0       0        0        1        0           0
+3     0       1        1        3        0           0
+4     0       1        1        0        0           0
+2023-05-14 17:40:04,076 - [line:66] - INFO: one hot encoder: [array([0, 1]), array([0, 1, 2]), array([0, 1, 2]), array([0, 1, 2, 3]), array([0]), array([0])]
+2023-05-14 17:40:04,083 - [line:67] - INFO: after one hot encoding, X is:
+[[1. 0. 1. 0. 0. 1. 0. 0. 0. 0. 0. 1. 1. 1.]
+ [1. 0. 1. 0. 0. 1. 0. 0. 0. 0. 1. 0. 1. 1.]
+ [1. 0. 1. 0. 0. 1. 0. 0. 0. 1. 0. 0. 1. 1.]
+ [1. 0. 0. 1. 0. 0. 1. 0. 0. 0. 0. 1. 1. 1.]
+ [1. 0. 0. 1. 0. 0. 1. 0. 1. 0. 0. 0. 1. 1.]
+ [1. 0. 0. 1. 0. 0. 1. 0. 0. 1. 0. 0. 1. 1.]
+ [1. 0. 0. 0. 1. 0. 0. 1. 0. 0. 0. 1. 1. 1.]
+ [1. 0. 0. 0. 1. 0. 0. 1. 0. 0. 1. 0. 1. 1.]
+ [1. 0. 0. 0. 1. 0. 0. 1. 1. 0. 0. 0. 1. 1.]
+ [1. 0. 1. 0. 0. 0. 1. 0. 0. 1. 0. 0. 1. 1.]
+ [1. 0. 0. 1. 0. 0. 0. 1. 1. 0. 0. 0. 1. 1.]
+ [1. 0. 1. 0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 1.]
+ [1. 0. 0. 0. 1. 0. 1. 0. 0. 0. 0. 1. 1. 1.]
+ [1. 0. 0. 0. 1. 1. 0. 0. 0. 1. 0. 0. 1. 1.]
+ [1. 0. 1. 0. 0. 0. 1. 0. 1. 0. 0. 0. 1. 1.]
+ [1. 0. 0. 0. 1. 1. 0. 0. 0. 0. 0. 1. 1. 1.]
+ [1. 0. 0. 1. 0. 0. 0. 1. 0. 1. 0. 0. 1. 1.]
+ [1. 0. 0. 0. 1. 0. 1. 0. 0. 0. 1. 0. 1. 1.]
+ [1. 0. 0. 0. 1. 0. 1. 0. 1. 0. 0. 0. 1. 1.]
+ [0. 1. 1. 0. 0. 1. 0. 0. 0. 0. 0. 1. 1. 1.]
+ [0. 1. 1. 0. 0. 1. 0. 0. 0. 0. 1. 0. 1. 1.]
+ [0. 1. 0. 1. 0. 0. 1. 0. 1. 0. 0. 0. 1. 1.]
+ [0. 1. 0. 1. 0. 0. 1. 0. 0. 1. 0. 0. 1. 1.]
+ [0. 1. 0. 0. 1. 0. 0. 1. 0. 0. 0. 1. 1. 1.]
+ [0. 1. 0. 0. 1. 0. 0. 1. 0. 0. 1. 0. 1. 1.]
+ [0. 1. 0. 0. 1. 0. 0. 1. 1. 0. 0. 0. 1. 1.]
+ [0. 1. 0. 1. 0. 0. 0. 1. 1. 0. 0. 0. 1. 1.]
+ [0. 1. 1. 0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 1.]
+ [0. 1. 0. 0. 1. 0. 1. 0. 0. 0. 0. 1. 1. 1.]
+ [0. 1. 0. 0. 1. 1. 0. 0. 0. 1. 0. 0. 1. 1.]
+ [0. 1. 1. 0. 0. 0. 1. 0. 1. 0. 0. 0. 1. 1.]
+ [0. 1. 0. 0. 1. 1. 0. 0. 0. 0. 0. 1. 1. 1.]]
+2023-05-14 17:40:04,093 - [line:70] - INFO: ==================== start get all permutations ====================
+2023-05-14 17:40:04,094 - [line:91] - INFO: X:<class 'numpy.ndarray'>,y:<class 'numpy.ndarray'>
+2023-05-14 17:40:05,083 - [line:100] - INFO: ¸ê®Æ¿±µÈ§¹²¦
+2023-05-14 17:40:05,084 - [line:103] - INFO: ==================== start train / test split ====================
+2023-05-14 17:40:05,088 - [line:106] - INFO: train/test split done, X_train , X_test , y_train , y_test size:
+((694, 14), (298, 14), (694, 28, 28), (298, 28, 28))
+2023-05-14 17:40:05,089 - [line:107] - INFO: [[[0.  0.  0.  ... 0.  0.  0. ]
+  [0.  0.  0.  ... 0.  0.  0. ]
+  [0.  0.  0.  ... 0.  0.  0. ]
+  ...
+  [0.  0.  0.  ... 0.  0.  0. ]
+  [0.  0.  0.  ... 0.  0.  0. ]
+  [0.  0.  0.  ... 0.  0.  0. ]]
+
+ [[0.2 0.2 0.2 ... 0.6 0.6 0.6]
+  [0.2 0.2 0.2 ... 0.6 0.6 0.6]
+  [0.2 0.2 0.2 ... 0.6 0.6 0.6]
+  ...
+  [0.4 0.4 0.4 ... 0.8 0.8 0.8]
+  [0.4 0.4 0.4 ... 0.8 0.8 0.8]
+  [0.4 0.4 0.4 ... 0.8 0.8 0.8]]
+
+ [[0.3 0.3 0.3 ... 0.9 0.9 0.9]
+  [0.3 0.3 0.3 ... 0.9 0.9 0.9]
+  [0.3 0.3 0.3 ... 0.9 0.9 0.9]
+  ...
+  [0.6 0.6 0.6 ... 1.2 1.2 1.2]
+  [0.6 0.6 0.6 ... 1.2 1.2 1.2]
+  [0.6 0.6 0.6 ... 1.2 1.2 1.2]]
+
+ [[0.1 0.1 0.1 ... 0.3 0.3 0.3]
+  [0.1 0.1 0.1 ... 0.3 0.3 0.3]
+  [0.1 0.1 0.1 ... 0.3 0.3 0.3]
+  ...
+  [0.2 0.2 0.2 ... 0.4 0.4 0.4]
+  [0.2 0.2 0.2 ... 0.4 0.4 0.4]
+  [0.2 0.2 0.2 ... 0.4 0.4 0.4]]
+
+ [[0.  0.  0.  ... 0.  0.  0. ]
+  [0.  0.  0.  ... 0.  0.  0. ]
+  [0.  0.  0.  ... 0.  0.  0. ]
+  ...
+  [0.  0.  0.  ... 0.  0.  0. ]
+  [0.  0.  0.  ... 0.  0.  0. ]
+  [0.  0.  0.  ... 0.  0.  0. ]]]
+2023-05-14 17:40:05,105 - [line:693] - INFO: y_mean_train / y_std_train is 0.329971181556196 / 25.303896073200256
+2023-05-14 17:40:06,550 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:06,553 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:06,555 - [line:410] - INFO: the mean value of init_x image is
+[[-0.68590635 -1.0903103 ]
+ [ 0.19909158  0.17564668]]
+2023-05-14 17:40:09,130 - [line:678] - INFO: the mean value of out image is
+[[  1.4518881 -22.731829 ]
+ [-14.111486  -31.41757  ]]
+2023-05-14 17:40:09,131 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:09,132 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:09,134 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.37473047  0.29733774]
+ [-0.47810006  0.14964138]]
+2023-05-14 17:40:10,548 - [line:678] - INFO: the mean value of out image is
+[[37.623383  11.98878  ]
+ [20.646729   5.1816783]]
+2023-05-14 17:40:10,549 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:10,550 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:10,552 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.5259795  -0.3289939 ]
+ [ 0.21969841  0.5613519 ]]
+2023-05-14 17:40:12,060 - [line:678] - INFO: the mean value of out image is
+[[15.204071  -2.5939052]
+ [ 3.798615  -8.140684 ]]
+2023-05-14 17:40:12,061 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:12,063 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:12,064 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.67505753  1.9689841 ]
+ [-1.2834755   0.9133947 ]]
+2023-05-14 17:40:13,608 - [line:678] - INFO: the mean value of out image is
+[[50.53143  18.321852]
+ [31.405252 10.035481]]
+2023-05-14 17:40:13,609 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:13,610 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:13,611 - [line:410] - INFO: the mean value of init_x image is
+[[-0.6035895   0.3885198 ]
+ [-0.33200166 -0.2848608 ]]
+2023-05-14 17:40:15,150 - [line:678] - INFO: the mean value of out image is
+[[  9.680898  -9.914177]
+ [ -2.034089 -16.81026 ]]
+2023-05-14 17:40:15,151 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:15,152 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:15,154 - [line:410] - INFO: the mean value of init_x image is
+[[-0.9919741   1.3838009 ]
+ [ 0.39649037 -0.43581012]]
+2023-05-14 17:40:16,661 - [line:678] - INFO: the mean value of out image is
+[[15.05994   -3.963175 ]
+ [ 2.9094758 -9.484116 ]]
+2023-05-14 17:40:16,662 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:16,664 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:16,665 - [line:410] - INFO: the mean value of init_x image is
+[[-0.13830149 -0.87254876]
+ [ 0.55063766  0.37024155]]
+2023-05-14 17:40:18,231 - [line:678] - INFO: the mean value of out image is
+[[  6.561981 -16.926994]
+ [ -5.465519 -23.645647]]
+2023-05-14 17:40:18,232 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:18,233 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:18,235 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.05604633 -0.18353665]
+ [-0.2978219  -0.36302853]]
+2023-05-14 17:40:19,740 - [line:678] - INFO: the mean value of out image is
+[[ 10.562614  -10.213783 ]
+ [ -1.6952283 -16.0003   ]]
+2023-05-14 17:40:19,741 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:19,742 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:19,744 - [line:410] - INFO: the mean value of init_x image is
+[[-0.6467297   1.1287313 ]
+ [-0.70977515 -0.46423727]]
+2023-05-14 17:40:21,487 - [line:678] - INFO: the mean value of out image is
+[[ 12.142148    -9.12905   ]
+ [ -0.19737804 -16.449003  ]]
+2023-05-14 17:40:21,488 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:21,490 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:21,492 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.32956702 -1.7493975 ]
+ [-0.27658767 -0.36193505]]
+2023-05-14 17:40:23,298 - [line:678] - INFO: the mean value of out image is
+[[  1.0727623 -24.91766  ]
+ [-12.566963  -32.555073 ]]
+2023-05-14 17:40:23,298 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:23,300 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:23,302 - [line:410] - INFO: the mean value of init_x image is
+[[-1.1282986  -0.3380545 ]
+ [ 0.300447    0.13737944]]
+2023-05-14 17:40:24,794 - [line:678] - INFO: the mean value of out image is
+[[  7.9689784 -13.221066 ]
+ [ -5.068222  -20.980234 ]]
+2023-05-14 17:40:24,795 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:24,797 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:24,798 - [line:410] - INFO: the mean value of init_x image is
+[[-0.73687136 -0.71127325]
+ [-0.00239734 -1.3102242 ]]
+2023-05-14 17:40:26,303 - [line:678] - INFO: the mean value of out image is
+[[  4.1197023 -17.566687 ]
+ [ -9.402724  -25.528332 ]]
+2023-05-14 17:40:26,304 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:26,305 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:26,308 - [line:410] - INFO: the mean value of init_x image is
+[[0.80208313 1.2038738 ]
+ [0.33254957 0.26419553]]
+2023-05-14 17:40:27,713 - [line:678] - INFO: the mean value of out image is
+[[30.953405  7.240744]
+ [17.357098  2.84965 ]]
+2023-05-14 17:40:27,714 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:27,715 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:27,717 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.13285038 -0.38932762]
+ [-0.62044454 -0.39692348]]
+2023-05-14 17:40:29,136 - [line:678] - INFO: the mean value of out image is
+[[  9.871178 -10.460043]
+ [ -2.055956 -17.562769]]
+2023-05-14 17:40:29,137 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:29,138 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:29,140 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.7437772   0.6405464 ]
+ [ 0.24288209 -0.4180901 ]]
+2023-05-14 17:40:30,507 - [line:678] - INFO: the mean value of out image is
+[[37.33871   10.858052 ]
+ [20.681877   4.5519886]]
+2023-05-14 17:40:30,508 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:30,509 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:30,511 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.14586137 -0.4350824 ]
+ [ 0.36556244 -0.55326545]]
+2023-05-14 17:40:31,868 - [line:678] - INFO: the mean value of out image is
+[[  8.66393   -12.328634 ]
+ [ -3.0376754 -18.854431 ]]
+2023-05-14 17:40:31,869 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:31,871 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:31,873 - [line:410] - INFO: the mean value of init_x image is
+[[-0.5504313   0.70544726]
+ [ 0.6191532   0.61388147]]
+2023-05-14 17:40:33,293 - [line:678] - INFO: the mean value of out image is
+[[ 13.640126   -6.239712 ]
+ [  0.9700249 -11.454423 ]]
+2023-05-14 17:40:33,294 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:33,295 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:33,297 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.87520295 -0.19412915]
+ [-0.12852447 -0.20284948]]
+2023-05-14 17:40:34,678 - [line:678] - INFO: the mean value of out image is
+[[14.765471  -3.6128976]
+ [ 4.148731  -8.507442 ]]
+2023-05-14 17:40:34,679 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:34,680 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:34,682 - [line:410] - INFO: the mean value of init_x image is
+[[-0.5187024  -0.2541419 ]
+ [ 0.03162937  0.79187757]]
+2023-05-14 17:40:36,045 - [line:678] - INFO: the mean value of out image is
+[[23.080286   3.7267294]
+ [10.075104  -1.6011575]]
+2023-05-14 17:40:36,046 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:36,048 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:36,050 - [line:410] - INFO: the mean value of init_x image is
+[[-0.8463983   0.26104736]
+ [ 0.13769203  0.0932558 ]]
+2023-05-14 17:40:37,389 - [line:678] - INFO: the mean value of out image is
+[[29.86733    6.3165593]
+ [14.34402    1.4524875]]
+2023-05-14 17:40:37,390 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:37,392 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:37,393 - [line:410] - INFO: the mean value of init_x image is
+[[-0.24069105 -0.1451709 ]
+ [-0.42835864 -0.34459445]]
+2023-05-14 17:40:38,804 - [line:678] - INFO: the mean value of out image is
+[[29.546103    5.996619  ]
+ [13.65564     0.70691913]]
+2023-05-14 17:40:38,805 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:38,806 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:38,808 - [line:410] - INFO: the mean value of init_x image is
+[[-1.1115283   0.22706999]
+ [-1.3784993  -1.5242361 ]]
+2023-05-14 17:40:40,166 - [line:678] - INFO: the mean value of out image is
+[[  2.806729 -21.588896]
+ [-10.667244 -28.469316]]
+2023-05-14 17:40:40,166 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:40,168 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:40,169 - [line:410] - INFO: the mean value of init_x image is
+[[-0.52901393 -0.33825165]
+ [ 0.17512648  0.08953144]]
+2023-05-14 17:40:41,522 - [line:678] - INFO: the mean value of out image is
+[[  6.569413  -14.746831 ]
+ [ -5.6948385 -21.194262 ]]
+2023-05-14 17:40:41,523 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:41,524 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:41,526 - [line:410] - INFO: the mean value of init_x image is
+[[-0.4229199  -0.5873334 ]
+ [ 1.3365967  -0.01528164]]
+2023-05-14 17:40:42,939 - [line:678] - INFO: the mean value of out image is
+[[  6.344241 -13.419796]
+ [ -4.305222 -19.5583  ]]
+2023-05-14 17:40:42,940 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:42,942 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:42,944 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.51566887 -0.77630085]
+ [-0.39441058  0.40227553]]
+2023-05-14 17:40:44,389 - [line:678] - INFO: the mean value of out image is
+[[33.114178   9.192197 ]
+ [16.34513    3.3112724]]
+2023-05-14 17:40:44,389 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:44,391 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:44,393 - [line:410] - INFO: the mean value of init_x image is
+[[-0.75266176 -0.25258574]
+ [-0.5359262   0.6618539 ]]
+2023-05-14 17:40:45,816 - [line:678] - INFO: the mean value of out image is
+[[13.97162   -3.7390242]
+ [ 3.2380228 -8.395756 ]]
+2023-05-14 17:40:45,817 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:45,819 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:45,820 - [line:410] - INFO: the mean value of init_x image is
+[[0.77425444 0.11625653]
+ [0.69966006 0.08125134]]
+2023-05-14 17:40:47,340 - [line:678] - INFO: the mean value of out image is
+[[56.25345  21.524353]
+ [34.83339  13.224922]]
+2023-05-14 17:40:47,341 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:47,343 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:47,344 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.08168937 -0.6593075 ]
+ [-0.8484441  -0.10884193]]
+2023-05-14 17:40:48,935 - [line:678] - INFO: the mean value of out image is
+[[ -0.4950264 -26.752234 ]
+ [-13.744536  -35.77601  ]]
+2023-05-14 17:40:48,936 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:48,937 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:48,939 - [line:410] - INFO: the mean value of init_x image is
+[[-0.3003458  -0.2342562 ]
+ [-0.7624107   0.83072776]]
+2023-05-14 17:40:50,370 - [line:678] - INFO: the mean value of out image is
+[[ 16.489038   -4.893781 ]
+ [  2.6502354 -11.169548 ]]
+2023-05-14 17:40:50,371 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:50,372 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:50,375 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.3941119  -0.46396273]
+ [ 0.09283661 -0.19362605]]
+2023-05-14 17:40:51,809 - [line:678] - INFO: the mean value of out image is
+[[  1.7638948 -22.010159 ]
+ [ -9.3770075 -29.404715 ]]
+2023-05-14 17:40:51,810 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:51,811 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:51,813 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.37496892 -0.37496573]
+ [-0.6940529  -0.7651871 ]]
+2023-05-14 17:40:53,302 - [line:678] - INFO: the mean value of out image is
+[[  1.4908249 -22.289982 ]
+ [-11.596156  -30.61098  ]]
+2023-05-14 17:40:53,303 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:53,304 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:53,306 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.67665535 -0.68537635]
+ [ 0.12166379 -0.16471641]]
+2023-05-14 17:40:54,739 - [line:678] - INFO: the mean value of out image is
+[[23.27973    0.7728455]
+ [ 8.586853  -3.8720658]]
+2023-05-14 17:40:54,740 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:54,742 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:54,743 - [line:410] - INFO: the mean value of init_x image is
+[[-0.51491445 -0.09105527]
+ [ 1.5500292   1.3824148 ]]
+2023-05-14 17:40:56,249 - [line:678] - INFO: the mean value of out image is
+[[37.37293  12.8059  ]
+ [21.696062  6.994996]]
+2023-05-14 17:40:56,250 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:56,251 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:56,253 - [line:410] - INFO: the mean value of init_x image is
+[[-1.7488958 -0.5944062]
+ [ 0.8080643 -0.3122683]]
+2023-05-14 17:40:57,755 - [line:678] - INFO: the mean value of out image is
+[[  5.0787344 -18.588354 ]
+ [ -7.857508  -27.411541 ]]
+2023-05-14 17:40:57,755 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:57,757 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:57,758 - [line:410] - INFO: the mean value of init_x image is
+[[ 1.0895886   0.14117071]
+ [ 0.48980522 -0.453977  ]]
+2023-05-14 17:40:59,334 - [line:678] - INFO: the mean value of out image is
+[[  7.668568 -12.043902]
+ [ -3.647082 -18.153996]]
+2023-05-14 17:40:59,335 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:40:59,336 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:40:59,338 - [line:410] - INFO: the mean value of init_x image is
+[[0.5919836  1.2118939 ]
+ [0.9229612  0.00265024]]
+2023-05-14 17:41:00,885 - [line:678] - INFO: the mean value of out image is
+[[20.07224    0.742992 ]
+ [ 7.4348106 -4.698088 ]]
+2023-05-14 17:41:00,886 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:00,888 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:00,889 - [line:410] - INFO: the mean value of init_x image is
+[[-0.61282647  0.11949136]
+ [ 0.16028197 -1.2654306 ]]
+2023-05-14 17:41:02,294 - [line:678] - INFO: the mean value of out image is
+[[ 10.360819   -9.745163 ]
+ [ -2.3490193 -16.345234 ]]
+2023-05-14 17:41:02,295 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:02,296 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:02,298 - [line:410] - INFO: the mean value of init_x image is
+[[-0.7486334   0.23196512]
+ [-0.34079346 -0.3192518 ]]
+2023-05-14 17:41:04,028 - [line:678] - INFO: the mean value of out image is
+[[  9.974499   -8.727153 ]
+ [ -0.9349023 -15.165105 ]]
+2023-05-14 17:41:04,029 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:04,030 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:04,032 - [line:410] - INFO: the mean value of init_x image is
+[[-0.54213095 -0.11705612]
+ [-0.6422871   1.261261  ]]
+2023-05-14 17:41:05,594 - [line:678] - INFO: the mean value of out image is
+[[33.547768   8.505063 ]
+ [17.963768   2.2306511]]
+2023-05-14 17:41:05,595 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:05,597 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:05,599 - [line:410] - INFO: the mean value of init_x image is
+[[-1.4534029  -0.3129036 ]
+ [-0.09468813  1.1172934 ]]
+2023-05-14 17:41:07,110 - [line:678] - INFO: the mean value of out image is
+[[  4.692512  -16.3963   ]
+ [ -7.1978445 -24.778913 ]]
+2023-05-14 17:41:07,110 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:07,112 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:07,114 - [line:410] - INFO: the mean value of init_x image is
+[[-0.7650249   0.69336027]
+ [-0.24131164 -0.7015183 ]]
+2023-05-14 17:41:08,588 - [line:678] - INFO: the mean value of out image is
+[[  6.7025437 -13.22953  ]
+ [ -5.473316  -20.690723 ]]
+2023-05-14 17:41:08,588 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:08,590 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:08,592 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.3333406   1.550163  ]
+ [-0.62760085  0.7154478 ]]
+2023-05-14 17:41:10,152 - [line:678] - INFO: the mean value of out image is
+[[ 12.02581     -6.73972   ]
+ [  0.96914345 -12.458371  ]]
+2023-05-14 17:41:10,153 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:10,154 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:10,156 - [line:410] - INFO: the mean value of init_x image is
+[[ 5.1778334e-01  1.9876958e-01]
+ [-2.3051773e-01 -3.9651443e-04]]
+2023-05-14 17:41:11,716 - [line:678] - INFO: the mean value of out image is
+[[18.419434  -0.9955389]
+ [ 6.5092697 -7.152887 ]]
+2023-05-14 17:41:11,716 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:11,718 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:11,720 - [line:410] - INFO: the mean value of init_x image is
+[[-0.3239985 -0.5223359]
+ [ 0.9382402 -0.6556044]]
+2023-05-14 17:41:13,235 - [line:678] - INFO: the mean value of out image is
+[[22.879814   2.594394 ]
+ [10.709769  -1.9810585]]
+2023-05-14 17:41:13,236 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:13,237 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:13,239 - [line:410] - INFO: the mean value of init_x image is
+[[-0.00727708 -0.8800167 ]
+ [-0.13884257  0.1630446 ]]
+2023-05-14 17:41:14,720 - [line:678] - INFO: the mean value of out image is
+[[23.828697   3.0296197]
+ [ 9.256057  -2.7489765]]
+2023-05-14 17:41:14,721 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:14,723 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:14,724 - [line:410] - INFO: the mean value of init_x image is
+[[ 1.3977042   0.831541  ]
+ [ 0.38818327 -0.34021217]]
+2023-05-14 17:41:16,176 - [line:678] - INFO: the mean value of out image is
+[[47.171127 17.127947]
+ [28.770193  9.653789]]
+2023-05-14 17:41:16,177 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:16,178 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:16,180 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.65150666  0.73774123]
+ [-1.1271701   1.3094996 ]]
+2023-05-14 17:41:17,684 - [line:678] - INFO: the mean value of out image is
+[[44.356903 16.081936]
+ [27.201534  7.904007]]
+2023-05-14 17:41:17,685 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:17,687 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:17,688 - [line:410] - INFO: the mean value of init_x image is
+[[ 0.84027594 -0.95011556]
+ [-0.26183963  1.5974869 ]]
+2023-05-14 17:41:19,204 - [line:678] - INFO: the mean value of out image is
+[[16.55434   -3.2532766]
+ [ 4.0218563 -7.8824344]]
+2023-05-14 17:41:19,205 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:19,206 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:19,208 - [line:410] - INFO: the mean value of init_x image is
+[[-0.45916396  0.34067985]
+ [-0.33701697 -1.0895914 ]]
+2023-05-14 17:41:20,679 - [line:678] - INFO: the mean value of out image is
+[[  7.859457  -13.626502 ]
+ [ -3.9768808 -20.010681 ]]
+2023-05-14 17:41:20,680 - [line:398] - INFO: in Euler_Maruyama_sampler, batch_size, device is
+1, cuda
+2023-05-14 17:41:20,681 - [line:403] - INFO: init_x shape in sampler is torch.Size([1, 1, 28, 28])
+2023-05-14 17:41:20,682 - [line:410] - INFO: the mean value of init_x image is
+[[-0.40592998 -0.16753578]
+ [-1.0889477   0.41550478]]
+2023-05-14 17:41:22,164 - [line:678] - INFO: the mean value of out image is
+[[  9.206296  -11.071713 ]
+ [ -3.4462917 -17.342152 ]]
+2023-05-14 17:41:22,165 - [line:792] - INFO: mean out_mean_region of 50 times generation is
+[[ 17.38133838  -5.01701772]
+ [  3.8855114  -11.52329421]]
